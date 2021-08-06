@@ -35,6 +35,13 @@ const Laudo = () => {
   const [selectedItems, setSelectedItems] = useState([])
   const [text, setText] = useState("")
   const [loading, setLoading] = useState(false)
+  const [topics, setTopics] = useState([
+    {
+      name: "Orofaringe",
+      content:
+        "1. língua -  Sem Alterações \n 2. Orofaringe - Sem Alterações \n 3. Amígdalas - Sem Alteração \n",
+    },
+  ])
 
   useEffect(() => {
     setLaudoImages(location.state.images)
@@ -56,26 +63,16 @@ const Laudo = () => {
     setSelectedImages(imgs)
   }
 
-  const textToHtml = (txt) => {
-    const elem = document.createElement("div")
-    return txt
-      .split(/\n\n+/)
-      .map(
-        (paragraph) =>
-          `<p>${paragraph
-            .split(/\n+/)
-            .map((line) => {
-              elem.textContent = line
-              return elem.innerHTML
-            })
-            .join("<br/>")}</p>`
-      )
-      .join("")
-  }
-
   const handleInsertText = (e) => {
     const imageSrc = editorRef.current.getContent()
     setText((img) => [...img, imageSrc])
+  }
+
+  function handleSelectDevice() {
+    setText((ctx) => [
+      ...ctx,
+      "1. língua -  Sem Alterações \n 2. Orofaringe - Sem Alterações \n 3. Amígdalas - Sem Alteração \n",
+    ])
   }
 
   const onClick = ({ key }) => {
@@ -103,16 +100,6 @@ const Laudo = () => {
     }
   }
 
-  const menu = (
-    <Menu>
-      <Menu.Item onClick={onClick} key="1">
-        Orofaringe
-      </Menu.Item>
-      <Menu.Item onClick={onClick} key="2">
-        Amigdalite Crônica
-      </Menu.Item>
-    </Menu>
-  )
   return (
     <Row>
       <Col span={24}>
@@ -120,14 +107,11 @@ const Laudo = () => {
       </Col>
 
       <Row span={24}>
-        <Descriptions title="Dados do Paciente">
+        <Descriptions column={1} title="Paciente">
           {loading ? (
             <Skeleton paragraph={{ rows: 2 }} />
           ) : (
             <>
-              <Descriptions.Item label="Examinador">
-                Dr. Áureo Cangussu
-              </Descriptions.Item>
               <Descriptions.Item label="Nome">Paulo Victor</Descriptions.Item>
               <Descriptions.Item label="Data de Nascimento">
                 10/05/1997
@@ -135,7 +119,9 @@ const Laudo = () => {
               <Descriptions.Item label="Telefone">
                 (98)9 9174-1075
               </Descriptions.Item>
-              <Descriptions.Item label="Emitente">Teste</Descriptions.Item>
+              <Descriptions.Item label="Examinador">
+                Dr. Áureo Cangussu
+              </Descriptions.Item>
               <Descriptions.Item label="Convênio">Bradesco</Descriptions.Item>
             </>
           )}
@@ -146,11 +132,17 @@ const Laudo = () => {
         <Col span={16}>
           <Card
             title="Tópicos"
-            extra={
-              <Dropdown overlay={menu} placement="bottomCenter" arrow>
-                <Button>Tópicos</Button>
-              </Dropdown>
-            }
+            extra={topics.map((topic, i) => (
+              <Select
+                onChange={handleSelectDevice}
+                placeholder="Selecione um Dispositivo"
+                style={{ width: 120 }}
+                mode="tags"
+                tokenSeparators={[","]}
+              >
+                <Option value={topic.content}>{topic.name}</Option>
+              </Select>
+            ))}
           >
             <Editor
               /* eslint-disable-next-line no-return-assign */
@@ -176,6 +168,9 @@ const Laudo = () => {
               onChange={handleInsertText}
             />
           </Card>
+          <Col span={24}>
+            <Button>Salvar</Button>
+          </Col>
         </Col>
 
         <Col span={8}>

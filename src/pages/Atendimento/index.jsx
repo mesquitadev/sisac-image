@@ -12,6 +12,7 @@ import {
   message,
   Dropdown,
   Menu,
+  Select,
 } from "antd"
 import {
   CameraOutlined,
@@ -29,6 +30,7 @@ const Atendimento = () => {
   const history = useHistory()
   const webcamRef = useRef(null)
   const { id } = useParams()
+  const { Option } = Select
   const [selectedPaciente, setSelectedPaciente] = useState()
   const [loading, setLoading] = useState(false)
   const [audio, setAudio] = useState(false)
@@ -36,6 +38,7 @@ const Atendimento = () => {
   const [selectedImages, setSelectedImages] = useState([])
   const [deviceId, setDeviceId] = React.useState({})
   const [devices, setDevices] = React.useState([])
+  const [disabled, setDisabled] = useState(false)
 
   useEffect(() => {
     async function getItems() {
@@ -75,6 +78,10 @@ const Atendimento = () => {
       pathname: "/laudo",
       state: { images: selectedImages },
     })
+  }
+
+  function handleSelectDevice(camId) {
+    setDeviceId(camId)
   }
 
   const menu = (
@@ -120,22 +127,24 @@ const Atendimento = () => {
                 </Tooltip>
               </span>
             }
+            extra={devices.map((device, i) => (
+              <Select
+                onChange={handleSelectDevice}
+                placeholder="Selecione um Tópico"
+                style={{ width: 120 }}
+                disabled={!!disabled}
+              >
+                <Option value={device.deviceId}>{device.label}</Option>
+              </Select>
+            ))}
             bodyStyle={{ padding: 0 }}
           >
-            {devices.map((device, key) => (
-              <div>
-                <Webcam
-                  audio={false}
-                  videoConstraints={{ deviceId: device.deviceId }}
-                />
-                {device.label || `Device ${key + 1}`}
-              </div>
-            ))}
             <Webcam
               audio={audio}
               ref={webcamRef}
               screenshotFormat="image/jpeg"
               width="100%"
+              videoConstraints={{ deviceId }}
             />
             <Space style={{ padding: 10 }}>
               <Button
