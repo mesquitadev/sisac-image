@@ -1,9 +1,11 @@
 {
   "name": "sisac-image",
+  "title": "Sisac Image",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
+    "@apollo/client": "^3.4.8",
     "@chakra-ui/core": "^0.8.0",
     "@chakra-ui/icons": "^1.0.14",
     "@chakra-ui/react": "^1.6.5",
@@ -20,6 +22,7 @@
     "date-fns": "^2.23.0",
     "emotion-theming": "^11.0.0",
     "framer-motion": "^4.1.17",
+    "graphql": "^15.5.1",
     "immutable": "^4.0.0-rc.14",
     "livecam": "^0.2.0",
     "react": "^17.0.2",
@@ -38,8 +41,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "dev": "concurrently -k \"BROWSER=none npm start\" \"npm:electron\"",
+    "electron": "wait-on tcp:3000 && electron ."
   },
+  "main": "public/electron.js",
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -59,6 +65,9 @@
     ]
   },
   "devDependencies": {
+    "concurrently": "^6.2.1",
+    "electron": "^13.2.1",
+    "electron-is-dev": "^2.0.0",
     "eslint": "^7.30.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
@@ -67,6 +76,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "prettier": "^2.3.2"
+    "prettier": "^2.3.2",
+    "wait-on": "^6.0.0"
   }
 }
